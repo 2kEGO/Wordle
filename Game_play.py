@@ -1,10 +1,15 @@
 from main import Wordle
+from typing import List
 from letter_position import LetterState
 from colorama import Fore
+import random
 
 def main():
-    print('Hello Word')
-    wordle = Wordle('APPLE')
+    print('Welcome to Wordle')
+
+    word_set = load_word_set("Personal project/Wordle/Convert_word.py")
+    secret = random.choice(list(word_set))
+    wordle = Wordle(secret)
 
     while wordle.can_attempt:
         x = input('Enter 5 letters word:').upper()
@@ -24,6 +29,7 @@ def main():
         print('Congratulation, You have solved the puzzle')
     else:
         print('You have failed')
+        print(f"The answer was: {wordle.secret}")
 
 def display_result(wordle: Wordle):
     print('\n')
@@ -35,6 +41,14 @@ def display_result(wordle: Wordle):
     
     for _ in range(wordle.remaining_attempts):
         print(' '.join(['_'] * wordle.word_length))
+
+def load_word_set(path: str):
+    word_set = set()
+    with open(path, 'r') as f:
+        for line in f.readlines():
+            word = line.strip().upper()
+            word_set.add(word)
+        return word_set
 
 def convert_result_to_color(result: list[LetterState]):
     result_with_color = []
@@ -50,8 +64,15 @@ def convert_result_to_color(result: list[LetterState]):
     return ' '.join(result_with_color)
 
 def draw_boder(line: list[str], size: int, pad: int=1):
-    
-    top_boder = ''
-    
+    content_length = size + pad * 2
+    top_border = "┌" + "─" * content_length + "┐"
+    bottom_border = "└" + "─" * content_length + "┘"
+    space = " " * pad
+    print(top_border)
+
+    for line in lines:
+        print('|' + space + line + space + '|')
+    print(bottom_border)
+
 if __name__ == '__main__':
     main()
